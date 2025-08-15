@@ -6,24 +6,65 @@
     <div id="main" v-if="isMainState">
       <p>Get address Country, City and Provider at 2 clicks!</p>
       <input v-model="ipAddress" placeholder="Enter IP address" maxlength="39"></input><br/>
-      <button :class="{nonActiveButton: ipAddress == ''}">Get {{ buttonAddressPlaceholder }} info</button>
+      <button :class="{nonActiveButton: ipAddress == ''}" @click="getIpInfo()">Get {{ buttonAddressPlaceholder }} info</button>
+      <p class="error" v-show="error != ''">{{ error }}</p>
+    </div>
+
+    <div id="info" v-else>
+      <p id="subtitle">{{ ipAddress}} information</p>
+      <br/>
+      <div v-if="ipInfo.country != null">
+        <h3>Country</h3>
+        <p>{{ ipInfo.country }}</p>
+      </div>
+      <div v-if="ipInfo.city != null">
+        <h3>City</h3>
+        <p>{{ ipInfo.city }}</p>
+      </div>
+      <div v-if="ipInfo.org != null">
+        <h3>Provider</h3>
+        <p>{{ ipInfo.org }}</p>
+      </div>
+      <div class="go-back" @click="isMainState = true"><h5><</h5></div>
     </div>
   </div>
   <p class="author">by dertfin1</p>
 </template>
 
 <script>
+import axios from "axios";
 export default {
   data() {
     return {
-      ipAddress: "3d67:49a7:e0c4:c4e9:9d0e:a3d4:5d61:d263",
-      isMainState: false
+      ipAddress: "",
+      isMainState: true,
+      error: "",
+      ipInfo: {}
     }
   },
   computed: {
     buttonAddressPlaceholder() {
       if (this.ipAddress == "") return "address";
       return this.ipAddress.length <= 15 ? this.ipAddress : "address"; // IPv4 будет отображаться в кнопке, а IPv6 - нет, тк длинный
+    }
+  },
+  methods: {
+    getIpInfo() {
+      this.error = "";
+      if (this.ipAddress == "") {
+        this.error = "Enter IP address!";
+      }
+
+      axios.get(`http://ip-api.com/json/${this.ipAddress}`)
+        .then(response => {
+          if (response.data.status != "success") {
+            this.error = "IP address not valid!";
+          } else {
+            this.ipInfo = response.data;
+            this.isMainState = false;
+          }
+        })
+        .catch(error => this.error = "Unknown error!")
     }
   }
 }
@@ -46,6 +87,7 @@ export default {
 
   color: white;
   font-family: "Monserrat";
+  box-shadow: 0px 0px 10px #1d1d1d;
 
   background: #242424;
   background: linear-gradient(318deg,rgba(36, 36, 36, 1) 0%, rgba(59, 59, 59, 1) 100%);
@@ -91,6 +133,7 @@ input:focus {
 button {
   padding: 0.5vh 2vw 0.5vh 2vw;
   display: inline-block;
+  margin-bottom: 0.5vh;
 
   border: none;
   border-radius: 5px;
@@ -110,5 +153,38 @@ button:hover {
 
 .nonActiveButton {
   background: #363636;
+}
+
+.error {
+  color: red;
+  font-family: "Monserrat";
+  margin-bottom: 0;
+  font-size: 0.9em;
+}
+
+#info #subtitle {
+  margin-bottom: 0;
+}
+
+#info h3 {
+  font-size: 1.3em;
+}
+
+#info p {
+  font-size: 1em;
+  margin-bottom: 2vh;
+}
+
+.go-back {
+  color: white;
+  font-family: "Monserrat";
+  position: absolute;
+  padding: 20px;
+  bottom: 0;
+  left: 0;
+}
+
+.go-back:hover {
+  cursor: pointer;
 }
 </style>
