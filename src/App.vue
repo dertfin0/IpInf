@@ -187,4 +187,16 @@ button:hover {
 .go-back:hover {
   cursor: pointer;
 }
+
+@media screen and (max-width: 550px) {
+  .container {
+    width: 70vw;
+  }
+}
+
+@media screen and (max-width: 360px) {
+  .container {
+    width: 80vw;
+  }
+}
 </style>
