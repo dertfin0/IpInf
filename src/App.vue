@@ -53,6 +53,7 @@ export default {
       this.error = "";
       if (this.ipAddress == "") {
         this.error = "Enter IP address!";
+        return;
       }
 
       axios.get(`http://ip-api.com/json/${this.ipAddress}`)
