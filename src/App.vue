@@ -1,11 +1,22 @@
 <script setup></script>
 
 <template>
-  <h1>You did it!</h1>
-  <p>
-    Visit <a href="https://vuejs.org/" target="_blank" rel="noopener">vuejs.org</a> to read the
-    documentation
-  </p>
+  <div className="container">
+    <h1>Get IP Info</h1>
+  </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  color: white;
+  background-color: #333138;
+
+  border-radius: 13px;
+  padding: 5vh 5vw 5vh 5vw;
+}
+</style>
